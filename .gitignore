@@ -1,0 +1,22 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Pycharm
+.idea/
+
+# Data
+subtitles/
+
+# Environment Configuration
+.env
+
+# Virtual environments
+.venv
+
+# Lock files
+*.lock
