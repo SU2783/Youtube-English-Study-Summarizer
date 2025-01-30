@@ -48,7 +48,7 @@ def extract_playlists(
         description = entry['description']    # 영상 설명
         chapters = entry['chapters']          # 영상 챕터
         subtitles = entry['subtitles']        # 자막
-        channels = entry['channel']           # 채널명
+        channel = entry['channel']           # 채널명
         channel_url = entry['channel_url']    # 채널 URL
         formats = entry['requested_formats']  # 다운로드 가능한 포맷
 
@@ -92,7 +92,7 @@ def extract_playlists(
             title=title,
             description=description,
             chapters=chapters,
-            channels=channels,
+            channel=channel,
             channel_url=channel_url,
             video_info=video_info,
             audio_info=audio_info,
@@ -103,7 +103,7 @@ def extract_playlists(
         print(f"영상 제목: {title}")
         print(f"영상 설명: \n{description}")
         print(f"챕터: {chapters}")
-        print(f"채널명: {channels} - {channel_url}")
+        print(f"채널명: {channel} - {channel_url}")
         print(f"자막: {subtitles}")
         print('-' * 50)
 
@@ -124,7 +124,7 @@ def save_metadata(
     title: str,
     description: str,
     chapters: list,
-    channels: str,
+    channel: str,
     channel_url: str,
     video_info: str = None,
     audio_info: str = None,
@@ -138,7 +138,7 @@ def save_metadata(
         "title": title,
         "description": description,
         "chapters": chapters,
-        "channels": channels,
+        "channel": channel,
         "channel_url": channel_url,
         "video_url": video_url,
         "video_info": video_info,

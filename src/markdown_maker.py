@@ -6,6 +6,8 @@ def make_markdown_content(video_id: str, content: str, save: bool = False):
     metadata = load_metadata(video_id)
     video_url = metadata['video_url']
     video_title = metadata['title']
+    channel = metadata['channel']
+    channel_url = metadata['channel_url']
     embed_video_url = video_url.replace('watch?v=', 'embed/')
 
     content = make_timestamp_embed_link(content, video_title, embed_video_url)
@@ -17,7 +19,8 @@ def make_markdown_content(video_id: str, content: str, save: bool = False):
 
 <iframe title="{video_title}" src="{embed_video_url}?amp;feature=oembed" allowfullscreen="" allow="fullscreen" style="aspect-ratio: 1.76991 / 1; width: 100%; height: 100%;"></iframe>
 
-Source: [YouTube]({video_url})
+`Source: {video_title}` [Link]({video_url})
+`Channel: {channel}` [Link]({channel_url})
 
 ---
 
