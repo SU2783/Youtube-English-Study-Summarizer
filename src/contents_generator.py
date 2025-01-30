@@ -54,7 +54,11 @@ class ContentsGenerator:
 
             print(f"Generating content for {uploaded_file.display_name}...")
 
-            self._generate_content(prompt=prompt, uploaded_file=uploaded_file, save=True)
+            response_content = self.generate_content(prompt=prompt, uploaded_file=uploaded_file)
+
+            file_name = Path(uploaded_file.display_name).stem
+            make_markdown_content(file_name, response_content, save=True)
+
             self.generated_contents.append(uploaded_file.display_name)
 
             print(f"Generated content for {uploaded_file.display_name}")
@@ -62,20 +66,17 @@ class ContentsGenerator:
         all_contents_generated = len(self.generated_contents) == len(list(get_all_uploaded_files()))
         return all_contents_generated
 
-    def _generate_content(self, prompt: str, uploaded_file: File, save: bool = True):
-        contents = [prompt, uploaded_file]
+    def generate_content(self, prompt: str, uploaded_file: File = None):
+        prompt = [prompt, uploaded_file] if uploaded_file else prompt
 
         responses = self.model.generate_content(
-            contents,
+            prompt,
             generation_config=self.generation_config,
             request_options=self.request_options,
             stream=False,
         )
         response_content = responses.text.strip()
-
-        if save:
-            file_name = Path(uploaded_file.display_name).stem
-            make_markdown_content(file_name, response_content, save=True)
+        return response_content
 
     @staticmethod
     def create_model(model_name: str = 'gemini-1.5-flash-002', system_instruction=None):
@@ -88,3 +89,14 @@ class ContentsGenerator:
     def print_all_available_models():
         for model in list_models():
             print(model)
+
+
+if __name__ == '__main__':
+    ContentsGenerator.print_all_available_models()
+
+    model_name = 'gemini-1.5-flash-002'
+    system_instruction = "Create a content that is informative and engaging."
+    contents_generator = ContentsGenerator(model_name, system_instruction)
+
+    answer = contents_generator.generate_content("Write a script for a video about the history of the internet.")
+    print(answer)
