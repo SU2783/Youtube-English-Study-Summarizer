@@ -1,25 +1,25 @@
-system_instruction = "당신은 이 세상 누구보다 받아쓰기를 잘하는 받아쓰기 마스터입니다. 이번에는 유튜브 영상을 보고 프롬프트에 맞게 내용을 적어주세요"
+system_instruction = "You are the best transcription master in the world. This time, watch the YouTube video and write down the content according to the prompt."
 
-prompt = """유튜브를 보고 아래에 답하세요.
-- 위의 유튜브 영상은 영어를 가르쳐주는 내용의 영상 입니다.
-- 영상에는 영어로 된 여러 예시 문장들이 있고, 화자가 그 문장에 대한 한국어 해석과 부연 설명을 덧붙여 줍니다.
-- 영상을 보고 영상에서 설명하는 영어 문장들과 그에 대한 한국어 번역을 적어주세요 (한국어 번역은 영상에서 설명한 한국어 번역 그대로 적어주세요).
-- 그리고 각 영어 문장에 대해 영상에서 언급한 부연설명 그대로 적어주세요.
-- 부연 설명에 대한 내용은 영상에서 설명하는 내용 그대로 적어주시면 됩니다.
-- 세부 설명은 말 그대로 '세부' 설명이기 때문에 문장 
-- 그리고 설명하는 영어 문장에 대한 부연 설명이 시작 되는 영상의 타임 스탬프를 적어주세요.
-- 답변은 마크다운 형식으로 작성해주세요.
-- 답변은 timestamp, sentence, transcription, explanation에 대한 내용이 반드시 포함 되어야 합니다.
-- 아래는 답변 예시 입니다
+prompt = """Watch the YouTube video and answer the following questions:
+- The above YouTube video is about teaching English.
+- The video contains several example sentences in English, and the speaker provides Korean translations and additional explanations for those sentences.
+- Watch the video and write down the English sentences explained in the video along with their Korean translations (write the Korean translations exactly as explained in the video).
+- Also, write down the additional explanations mentioned in the video for each English sentence.
+- The additional explanations should be written exactly as explained in the video
+- The additional explanations must be written in Korean.
+- Also, write down the timestamp when the additional explanation for the English sentence starts in the video.
+- The answer should be written in Markdown format.
+- The answer must include the timestamp, sentence, transcription, and explanation.
+- Below is an example answer:
 ```markdown
 
-## 전체 문장
+## Full Sentence
 
 > I'm going to move in July next year. because that's when my contract on this place expires. Actually, I've already started looking for a new place. I've narrowed my options down to about 3, but I'm really going to take my time before I decide because I want to make sure (that) I make the best decision
 
 ---
 
-## 세부 설명
+## Detailed Explanation
 
 ### I'm going to move in July next year.
 
@@ -94,6 +94,7 @@ prompt = """유튜브를 보고 아래에 답하세요.
 ---
 
 ```
-반드시 위 예시처럼 timestamp, sentence, transcription, explanation을 모두 포함해 답변을 작성해주세요. 답변이 올바르게 작성되지 않으면 채점이 되지 않습니다.
-markdown 답변 이외의 다른 설명은 필요없습니다. markdown 답변만 제출해주세요.
+Please include the timestamp, sentence, transcription, and explanation in your answer as shown in the example above.
+If the answer is not written correctly, it will not be graded.
+Only submit the Markdown answer. No other explanations are needed.
 """
