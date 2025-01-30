@@ -28,16 +28,23 @@ def extract_playlists(
         'outtmpl': f'{video_dir}/%(id)s.%(ext)s',  # 출력 파일 이름 형식,
     }
 
-    # yt-dlp를 사용하여 재생목록의 모든 영상 URL, 제목, 자막을 추출
+    # yt-dlp를 사용하여 재생목록의 모든 영상 URL, 제목, 자막 등을 추출
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         result = ydl.extract_info(playlist_url, download=False)
 
-    # 재생목록이 비어있는 경우 예외 처리
-    if 'entries' not in result:
-        print("재생목록이 비어있습니다.")
-        return
+    # 재생 목록 생성
+    if 'entries' in result:
+        video_list = result['entries']
+    else:
+        # 영상을 찾을 수 없는 경우 종료
+        if 'id' not in result:
+            print("영상을 찾을 수 없습니다.")
+            return
 
-    for entry in result['entries']:
+        video_list = [result]
+
+    # 재생목록의 모든 영상 정보를 추출
+    for entry in video_list:
         del entry['formats']
         del entry['thumbnails']
         del entry['heatmap']
