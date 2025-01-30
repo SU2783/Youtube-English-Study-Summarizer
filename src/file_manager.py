@@ -2,8 +2,12 @@ import os
 import google.generativeai as genai
 
 
-def get_all_uploaded_files():
+def get_all_uploaded_files(only_ready: bool = True):
     for uploaded_file in genai.list_files():
+        if only_ready and uploaded_file.state != 2:
+            print(f"File is not ready yet. {uploaded_file.state=}")
+            continue
+
         yield uploaded_file
 
 
