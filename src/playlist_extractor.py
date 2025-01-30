@@ -4,6 +4,8 @@ import yt_dlp
 import requests
 from typing import Dict
 
+from src.file_manager import upload_file
+
 
 def extract_playlists(
     playlist_url: str,
@@ -98,6 +100,13 @@ def extract_playlists(
             audio_info=audio_info,
         )
 
+        # 비디오나 오디오 중 하나만 업로드
+        if video_info:
+            upload_file(video_info['video_path'])
+
+        elif audio_info:
+            upload_file(audio_info['audio_path'])
+
         print(f"영상 ID: {video_id}")
         print(f"영상 URL: {video_url}")
         print(f"영상 제목: {title}")
@@ -109,6 +118,10 @@ def extract_playlists(
 
 
 def save_contents(contents_url: str, save_path: str):
+    if os.path.exists(save_path):
+        print(f"{save_path} 파일이 이미 존재합니다.")
+        return
+
     print(f"다운로드 URL: {contents_url}")
 
     response = requests.get(contents_url, stream=True)
