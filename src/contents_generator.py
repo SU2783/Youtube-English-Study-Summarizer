@@ -63,7 +63,7 @@ class ContentsGenerator:
 
             print(f"Generated content for {uploaded_file.display_name}")
 
-        all_contents_generated = len(self.generated_contents) == len(list(get_all_uploaded_files()))
+        all_contents_generated = len(self.generated_contents) == len(list(get_all_uploaded_files(only_ready=False)))
         return all_contents_generated
 
     def generate_content(self, prompt: str, uploaded_file: File = None):
