@@ -57,17 +57,16 @@ def extract_playlists(
 
         # 다운로드 가능한 포맷
         for downloadable_format in formats:
-            print(downloadable_format)
             download_url = downloadable_format['url']
 
-            # 비디오 다운로드
-            if downloadable_format['video_ext'] != 'none':
-                video_info = downloadable_format
-                video_ext = downloadable_format['video_ext']
-
-                video_path = f"{video_dir}/{video_id}.{video_ext}"
-                video_info['video_path'] = video_path
-                save_contents(contents_url=download_url, save_path=video_path)
+            # # 비디오 다운로드
+            # if downloadable_format['video_ext'] != 'none':
+            #     video_info = downloadable_format
+            #     video_ext = downloadable_format['video_ext']
+            #
+            #     video_path = f"{video_dir}/{video_id}.{video_ext}"
+            #     video_info['video_path'] = video_path
+            #     save_contents(contents_url=download_url, save_path=video_path)
 
             # 오디오 다운로드
             if downloadable_format['audio_ext'] != 'none':
@@ -89,6 +88,7 @@ def extract_playlists(
         # 영상 정보를 JSON 파일로 저장
         save_metadata(
             video_id=video_id,
+            video_url=video_url,
             title=title,
             description=description,
             chapters=chapters,
@@ -120,6 +120,7 @@ def save_contents(contents_url: str, save_path: str):
 
 def save_metadata(
     video_id: str,
+    video_url: str,
     title: str,
     description: str,
     chapters: list,
@@ -139,6 +140,7 @@ def save_metadata(
         "chapters": chapters,
         "channels": channels,
         "channel_url": channel_url,
+        "video_url": video_url,
         "video_info": video_info,
         "audio_info": audio_info,
     }
@@ -183,3 +185,8 @@ def save_automatic_subtitles(
         subtitle_filepath = os.path.join(subtitle_dir, f"{video_id}_{lang}.{ext}")
         with open(f"{subtitle_filepath}", 'wb') as f:
             f.write(response.content)
+
+
+if __name__ == "__main__":
+    playlist_url = "https://www.youtube.com/playlist?list=PLEzsBdrpZXC-T94osPAZva_BWFq4S8nL6"
+    extract_playlists(playlist_url)
