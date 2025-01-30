@@ -8,6 +8,12 @@ Summarized contents are saved in a markdown file.
 This summarizer works well with [`Obsidian`](https://obsidian.md/).
 You can import generated markdown files into your Obsidian vault for a seamless note-taking and study experience.
 
+<figure>
+<p align="center">
+ <img src = "./images/image.gif">
+</p>
+</figure>
+
 ---
 
 ## Usage
