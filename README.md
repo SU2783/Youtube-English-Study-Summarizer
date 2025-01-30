@@ -42,19 +42,33 @@ GEMINI_API_KEY=<your_api_key>
 
 or export it as an environment variable
 
-- **Linux Bash**
+- Linux Bash
 ```bash
 export GEMINI_API_KEY=<your_api_key>
 ```
 
-- **Windows PowerShell**
+- Windows PowerShell
 ```powershell
 $env:GEMINI_API_KEY=<your_api_key>
 ```
 
 ### 5. Run the summarizer from the root directory
 ```bash
-python main.py
+python summarizer.py --url <youtube_url>
+```
+
+---
+
+
+## Example
+
+```bash
+python summarizer.py --url https://www.youtube.com/watch?v=cfvZ48RnRXw
+```
+
+you can also use the playlist URL
+```bash
+python summarizer.py --url https://www.youtube.com/playlist?list=PLEzsBdrpZXC-T94osPAZva_BWFq4S8nL6
 ```
 
 ---
@@ -63,6 +77,6 @@ python main.py
 ## Note
 
 - The summarizer is not perfect. It may not provide the correct summary.
-- It takes time to extract and upload the main contents of the video. Please be patient.
+- It takes long time to extract and upload the main contents of the video and activate uploaded contents on the Google Upload Server. Please be patient.
 - The summarizer is implemented using the [`Google Gemini`](https://gemini.google.com/app). It may not work properly if the model is not available.
 - The default language of the summarized text is Korean. If you want to use another language, you can change the prompt in the `src/prompt.py` file. 
