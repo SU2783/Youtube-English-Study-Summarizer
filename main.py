@@ -1,3 +1,4 @@
+import os
 from dotenv import load_dotenv
 
 import google.generativeai as genai
@@ -10,6 +11,7 @@ from src.playlist_extractor import extract_playlists
 from src.file_manager import upload_files_from_directory, delete_all_uploaded_files
 
 load_dotenv()
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 
 def main(
@@ -23,7 +25,7 @@ def main(
     contents_generator.set_generation_config(generation_config, request_options)
 
     # 재생목록의 모든 영상 및 영상 정보를 추출
-    extract_playlists(playlist_url)
+    extract_playlists(playlists)
 
     # 추출한 영상을 업로드
     upload_files_from_directory(dir_path='assets/audios')
@@ -49,8 +51,8 @@ if __name__ == '__main__':
         response_mime_type="text/plain",
     )
     request_options = RequestOptions(
-        retry=Retry(maximum=5, timeout=60*5),
-        timeout=60*5,
+        retry=Retry(maximum=5, timeout=60*10),
+        timeout=60*10,
     )
 
     main(playlist_url, model_name, generation_config, request_options)

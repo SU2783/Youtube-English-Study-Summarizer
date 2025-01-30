@@ -5,7 +5,7 @@ import google.generativeai as genai
 def get_all_uploaded_files(only_ready: bool = True):
     for uploaded_file in genai.list_files():
         if only_ready and uploaded_file.state != 2:
-            print(f"File is not ready yet. {uploaded_file.state=}")
+            print(f"File {uploaded_file.display_name} is not ready yet. {uploaded_file.state=}")
             continue
 
         yield uploaded_file
@@ -30,5 +30,5 @@ def delete_uploaded_file(file_name: str):
 
 def delete_all_uploaded_files():
     for uploaded_file in genai.list_files():
-        genai.delete_file(uploaded_file.name)
+        delete_uploaded_file(uploaded_file.name)
 
