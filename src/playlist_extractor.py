@@ -50,7 +50,7 @@ def extract_playlists(
 
     # yt-dlp를 사용하여 재생목록의 모든 영상 URL, 제목, 자막을 추출
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        result = ydl.extract_info(playlist_url, download=False)
+        result = ydl.extract_info(playlist_url, download=True)
 
     # 재생목록이 비어있는 경우 예외 처리
     if 'entries' not in result:
