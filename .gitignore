@@ -10,7 +10,7 @@ wheels/
 .idea/
 
 # Data
-subtitles/
+assets/
 
 # Environment Configuration
 .env
