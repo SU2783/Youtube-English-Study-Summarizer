@@ -49,7 +49,7 @@ def main(
     # 업로드 한 모든 영상에 대한 컨텐츠 생성
     contents_generator.generate_contents(prompt)
 
-    # 업로드 한 모든 영상 삭제
+    # 업로드 한 모든 파일 삭제
     delete_all_uploaded_files()
 
     # 추출한 모든 영상 정보 및 파일 삭제

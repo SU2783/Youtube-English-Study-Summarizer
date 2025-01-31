@@ -5,7 +5,7 @@ import google.generativeai as genai
 
 def get_all_uploaded_files(only_ready: bool = True):
     for uploaded_file in genai.list_files():
-        if only_ready and uploaded_file.state != 2:
+        if only_ready and uploaded_file.state.name != "ACTIVE":
             print(f"File {uploaded_file.display_name} is not ready yet. {uploaded_file.state=}")
             continue
 

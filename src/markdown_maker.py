@@ -15,10 +15,7 @@ def make_markdown_content(video_id: str, content: str, save: bool = False):
     content = make_timestamp_embed_link(content, video_title, embed_video_url)
     content = content.replace("```markdown", "").replace("```", "")
 
-    markdown = f"""# {video_title} 
-    
----
-
+    markdown = f"""
 <iframe title="{video_title}" src="{embed_video_url}?amp;feature=oembed" allowfullscreen="" allow="fullscreen" style="aspect-ratio: 1.76991 / 1; width: 100%; height: 100%;"></iframe>
 
 `Source: {video_title}` [Link]({video_url})
