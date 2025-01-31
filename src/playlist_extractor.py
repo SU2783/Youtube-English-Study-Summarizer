@@ -2,35 +2,33 @@ import os
 import json
 import yt_dlp
 import requests
-from typing import Dict
 
-from src.file_manager import upload_file
+from typing import Dict
 
 
 def extract_playlists(
     playlist_url: str,
-    video_dir: str = "assets/videos",
     audio_dir: str = "assets/audios",
-    subtitle_dir: str = "assets/subtitles",
 ):
     # 컨텐츠를 저장할 폴더 생성
-    os.makedirs(video_dir, exist_ok=True)
     os.makedirs(audio_dir, exist_ok=True)
-    os.makedirs(subtitle_dir, exist_ok=True)
 
     # yt-dlp 옵션 설정
     ydl_opts = {
-        'quiet': False,                  # 불필요한 출력 메시지 숨김 여부
-        'extract_flat': False,           # 비디오 정보를 포함하여 추출
-        'writesubtitles': True,          # 자막 다운로드 설정
-        'writeautomaticsub': True,       # 자동 자막 다운로드 설정
-        'subtitleslangs': ['en', 'ko'],  # 자막 언어 설정 (영어, 한국어)
-        'outtmpl': f'{video_dir}/%(id)s.%(ext)s',  # 출력 파일 이름 형식,
+        'quiet': False,                   # 불필요한 출력 메시지 숨김 여부
+        'extract_flat': False,            # 비디오 정보를 포함하여 추출
+        'format': 'bestaudio/best',       # 오디오 다운로드 포맷
+        'postprocessors': [{              # 다운로드 후 실행할 후처리기
+            'key': 'FFmpegExtractAudio',  # 오디오 추출
+            'preferredcodec': 'mp3',      # mp3로 변환
+            'preferredquality': '192',    # 오디오 품질
+        }],
+        'outtmpl': f'{audio_dir}/%(id)s.%(ext)s',  # 출력 파일 이름 형식,
     }
 
     # yt-dlp를 사용하여 재생목록의 모든 영상 URL, 제목, 자막 등을 추출
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        result = ydl.extract_info(playlist_url, download=False)
+        result = ydl.extract_info(playlist_url, download=True)
 
     # 재생 목록 생성
     if 'entries' in result:
@@ -59,40 +57,7 @@ def extract_playlists(
         subtitles = entry['subtitles']        # 자막
         channel = entry['channel']           # 채널명
         channel_url = entry['channel_url']    # 채널 URL
-        formats = entry['requested_formats']  # 다운로드 가능한 포맷
-
-        video_info = None
-        audio_info = None
-
-        # 다운로드 가능한 포맷
-        for downloadable_format in formats:
-            download_url = downloadable_format['url']
-
-            # # 비디오 다운로드
-            # if downloadable_format['video_ext'] != 'none':
-            #     video_info = downloadable_format
-            #     video_ext = downloadable_format['video_ext']
-            #
-            #     video_path = f"{video_dir}/{video_id}.{video_ext}"
-            #     video_info['video_path'] = video_path
-            #     save_contents(contents_url=download_url, save_path=video_path)
-
-            # 오디오 다운로드
-            if downloadable_format['audio_ext'] != 'none':
-                audio_info = downloadable_format
-                audio_ext = downloadable_format['audio_ext']
-
-                audio_path = f"{audio_dir}/{video_id}.{audio_ext}"
-                audio_info['audio_path'] = audio_path
-                save_contents(contents_url=download_url, save_path=audio_path)
-
-        # 자막이 존재하면 파일 경로를 출력
-        if subtitles:
-            subtitle_filepath = os.path.join(subtitle_dir, f"{video_id}.vtt")
-            print(f"자막 파일 저장 위치: {subtitle_filepath}")
-        else:
-            automatic_subtitle = entry['requested_subtitles']
-            save_automatic_subtitles(automatic_subtitle, video_id, subtitle_dir)
+        audio_file_path = f"{audio_dir}/{video_id}.mp3"
 
         # 영상 정보를 JSON 파일로 저장
         save_metadata(
@@ -103,16 +68,8 @@ def extract_playlists(
             chapters=chapters,
             channel=channel,
             channel_url=channel_url,
-            video_info=video_info,
-            audio_info=audio_info,
+            audio_file_path=audio_file_path,
         )
-
-        # 비디오나 오디오 중 하나만 업로드
-        if video_info:
-            upload_file(video_info['video_path'], mime_type=f"video/{video_info['video_ext']}")
-
-        elif audio_info:
-            upload_file(audio_info['audio_path'], mime_type=f"audio/{audio_info['audio_ext']}")
 
         print(f"영상 ID: {video_id}")
         print(f"영상 URL: {video_url}")
@@ -124,20 +81,6 @@ def extract_playlists(
         print('-' * 50)
 
 
-def save_contents(contents_url: str, save_path: str):
-    if os.path.exists(save_path):
-        print(f"{save_path} 파일이 이미 존재합니다.")
-        return
-
-    print(f"다운로드 URL: {contents_url}")
-
-    response = requests.get(contents_url, stream=True)
-    with open(save_path, 'wb') as f:
-        f.write(response.content)
-
-    print(f"파일 저장 위치: {save_path}")
-
-
 def save_metadata(
     video_id: str,
     video_url: str,
@@ -146,8 +89,7 @@ def save_metadata(
     chapters: list,
     channel: str,
     channel_url: str,
-    video_info: str = None,
-    audio_info: str = None,
+    audio_file_path: str,
 ):
     save_dir = os.path.join("assets", "metadata")
     save_path = os.path.join(save_dir, f"{video_id}.json")
@@ -161,8 +103,7 @@ def save_metadata(
         "channel": channel,
         "channel_url": channel_url,
         "video_url": video_url,
-        "video_info": video_info,
-        "audio_info": audio_info,
+        "audio_file_path": audio_file_path,
     }
 
     with open(save_path, 'w', encoding='utf-8') as f:

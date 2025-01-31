@@ -1,4 +1,5 @@
 import os
+import shutil
 import argparse
 from dotenv import load_dotenv
 
@@ -42,14 +43,17 @@ def main(
     # 재생목록의 모든 영상 및 영상 정보를 추출
     extract_playlists(youtube_url)
 
-    # # 추출한 영상을 업로드 (영상 추출 시 파일 업로드도 함께 되도록 수정했기 때문에 주석 처리함)
-    # upload_files_from_directory(dir_path='assets/audios', mime_type="audio/webm")
+    # 추출한 오디오 파일을 구글 서버에 업로드
+    upload_files_from_directory(dir_path='assets/audios', mime_type="audio/mp3")
 
     # 업로드 한 모든 영상에 대한 컨텐츠 생성
     contents_generator.generate_contents(prompt)
 
     # 업로드 한 모든 영상 삭제
     delete_all_uploaded_files()
+
+    # 추출한 모든 영상 정보 및 파일 삭제
+    shutil.rmtree('assets')
 
     print("모든 영상에 대한 컨텐츠 생성이 완료되었습니다.")
 
