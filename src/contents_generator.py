@@ -1,5 +1,7 @@
 import os
 import time
+
+from tqdm import tqdm
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -48,11 +50,13 @@ class ContentsGenerator:
             break
 
     def _generate_contents(self, prompt: str):
-        for uploaded_file in get_all_uploaded_files(only_ready=True):
+        progress_bar = tqdm(list(get_all_uploaded_files(only_ready=True)))  # For impatient people like me
+
+        for uploaded_file in progress_bar:
             if uploaded_file.display_name in self.generated_contents:
                 continue
 
-            print(f"Generating content for {uploaded_file.display_name}...")
+            progress_bar.set_description(f"Generating content for {uploaded_file.display_name}...")
 
             response_content = self.generate_content(prompt=prompt, uploaded_file=uploaded_file)
 
@@ -61,7 +65,7 @@ class ContentsGenerator:
 
             self.generated_contents.append(uploaded_file.display_name)
 
-            print(f"Generated content for {uploaded_file.display_name}")
+            progress_bar.set_description(f"Generated content for {uploaded_file.display_name}")
 
         all_contents_generated = len(self.generated_contents) == len(list(get_all_uploaded_files(only_ready=False)))
         return all_contents_generated
