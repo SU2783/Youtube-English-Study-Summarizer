@@ -1,4 +1,5 @@
 import os
+import re
 from datetime import datetime
 from src.playlist_extractor import load_metadata
 
@@ -30,12 +31,13 @@ def make_markdown_content(video_id: str, content: str, save: bool = False):
 """
 
     if save:
-        save_markdown(video_id, markdown)
+        save_markdown(video_title, markdown)
 
 
-def save_markdown(video_id: str, markdown: str):
+def save_markdown(video_title: str, markdown: str):
+    video_title = filter_video_title(video_title)
     os.makedirs("markdown", exist_ok=True)
-    with open(f"markdown/{video_id}.md", "w", encoding='utf-8') as f:
+    with open(f"markdown/{video_title}.md", "w", encoding='utf-8') as f:
         f.write(markdown)
 
 
@@ -65,3 +67,12 @@ def change_timestamp_to_second(timestamp: str):
         raise ValueError(f"Invalid timestamp format: {timestamp}")
 
     return hms.hour * 3600 + hms.minute * 60 + hms.second
+
+
+def filter_video_title(video_title: str) -> str:
+    # Define a regular expression pattern for invalid characters
+    invalid_chars = r'[<>:"/\\|?*]'
+
+    # Replace invalid characters with an empty string
+    video_title = re.sub(invalid_chars, '', video_title)
+    return video_title
