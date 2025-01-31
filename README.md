@@ -10,7 +10,7 @@ You can import generated markdown files into your Obsidian vault for a seamless 
 
 <figure>
 <p align="center">
- <img src = "./images/image.gif">
+ <img src ="https://github.com/user-attachments/assets/1e38defc-3e6a-4766-9e92-e3f569aee4a7">
 </p>
 </figure>
 
