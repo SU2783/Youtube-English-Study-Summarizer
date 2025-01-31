@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from src.playlist_extractor import load_metadata
 
@@ -33,6 +34,7 @@ def make_markdown_content(video_id: str, content: str, save: bool = False):
 
 
 def save_markdown(video_id: str, markdown: str):
+    os.makedirs("markdown", exist_ok=True)
     with open(f"markdown/{video_id}.md", "w", encoding='utf-8') as f:
         f.write(markdown)
 

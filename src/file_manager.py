@@ -11,16 +11,16 @@ def get_all_uploaded_files(only_ready: bool = True):
         yield uploaded_file
 
 
-def upload_file(file_path: str):
+def upload_file(file_path: str, mime_type: str = None):
     print(f"Uploading {file_path}...")
-    uploaded_file = genai.upload_file(path=file_path)
+    uploaded_file = genai.upload_file(path=file_path, mime_type=mime_type)
     print(f"Completed uploading {uploaded_file.display_name=} {uploaded_file.name=}")
 
 
-def upload_files_from_directory(dir_path: str):
+def upload_files_from_directory(dir_path: str, mime_type: str = None):
     for file in os.listdir(dir_path):
         audio_path = os.path.join(dir_path, file)
-        upload_file(audio_path)
+        upload_file(audio_path, mime_type=mime_type)
 
 
 def delete_uploaded_file(file_name: str):

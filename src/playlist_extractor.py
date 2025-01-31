@@ -109,10 +109,10 @@ def extract_playlists(
 
         # 비디오나 오디오 중 하나만 업로드
         if video_info:
-            upload_file(video_info['video_path'])
+            upload_file(video_info['video_path'], mime_type=f"video/{video_info['video_ext']}")
 
         elif audio_info:
-            upload_file(audio_info['audio_path'])
+            upload_file(audio_info['audio_path'], mime_type=f"audio/{audio_info['audio_ext']}")
 
         print(f"영상 ID: {video_id}")
         print(f"영상 URL: {video_url}")
