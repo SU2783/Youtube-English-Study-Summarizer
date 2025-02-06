@@ -19,7 +19,7 @@ genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 def parse_args():
     parser = argparse.ArgumentParser(description='Generate contents from YouTube playlist')
     parser.add_argument('--url', type=str, help='YouTube Video or Playlist URL')
-    parser.add_argument('--model_name', type=str, default='gemini-1.5-flash', help='Generative model name')
+    parser.add_argument('--model_name', type=str, default='gemini-2.0-pro-exp', help='Generative model name')
     return parser.parse_args()
 
 
