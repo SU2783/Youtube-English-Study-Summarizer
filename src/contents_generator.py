@@ -59,6 +59,8 @@ class ContentsGenerator:
             progress_bar.set_description(f"Generating content for {uploaded_file.display_name}...")
 
             response_content = self.generate_content(prompt=prompt, uploaded_file=uploaded_file)
+            if response_content is None:
+                continue
 
             file_name = Path(uploaded_file.display_name).stem
             make_markdown_content(file_name, response_content, save=True)
@@ -79,7 +81,12 @@ class ContentsGenerator:
             request_options=self.request_options,
             stream=False,
         )
-        response_content = responses.text.strip()
+
+        try:
+            response_content = responses.text.strip()
+        except ValueError:
+            response_content = None
+
         return response_content
 
     @staticmethod
