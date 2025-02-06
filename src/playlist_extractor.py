@@ -10,56 +10,66 @@ def extract_playlists(
     playlist_url: str,
     audio_dir: str = "assets/audios",
 ):
-    # 컨텐츠를 저장할 폴더 생성
+    """
+    Save all videos in the playlist as audio files.
+
+    Args:
+        playlist_url (str): YouTube Playlist URL
+        audio_dir (str): Directory to save audio files
+
+    Returns:
+        None
+    """
+    # Create a folder to save the content
     os.makedirs(audio_dir, exist_ok=True)
 
-    # yt-dlp 옵션 설정
+    # Set yt-dlp options
     ydl_opts = {
-        'quiet': False,                   # 불필요한 출력 메시지 숨김 여부
-        'extract_flat': False,            # 비디오 정보를 포함하여 추출
-        'format': 'bestaudio/best',       # 오디오 다운로드 포맷
-        'postprocessors': [{              # 다운로드 후 실행할 후처리기
-            'key': 'FFmpegExtractAudio',  # 오디오 추출
-            'preferredcodec': 'mp3',      # mp3로 변환
-            'preferredquality': '192',    # 오디오 품질
+        'quiet': False,                   # Hide unnecessary output messages
+        'extract_flat': False,            # Extract with video information
+        'format': 'bestaudio/best',       # Audio download format
+        'postprocessors': [{              # Postprocessor to run after download
+            'key': 'FFmpegExtractAudio',  # Extract audio
+            'preferredcodec': 'mp3',      # Convert to mp3
+            'preferredquality': '192',    # Audio quality
         }],
-        'outtmpl': f'{audio_dir}/%(id)s.%(ext)s',  # 출력 파일 이름 형식,
+        'outtmpl': f'{audio_dir}/%(id)s.%(ext)s',  # Output file name format
     }
 
-    # yt-dlp를 사용하여 재생목록의 모든 영상 URL, 제목, 자막 등을 추출
+    # Use yt-dlp to extract all video URLs, titles, subtitles, etc. from the playlist
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         result = ydl.extract_info(playlist_url, download=True)
 
-    # 재생 목록 생성
+    # Create a playlist
     if 'entries' in result:
         video_list = result['entries']
     else:
-        # 영상을 찾을 수 없는 경우 종료
+        # Exit if no videos are found
         if 'id' not in result:
-            print("영상을 찾을 수 없습니다.")
+            print("Video not found.")
             return
 
         video_list = [result]
 
-    # 재생목록의 모든 영상 정보를 추출
+    # Extract all video information from the playlist
     for entry in video_list:
         del entry['formats']
         del entry['thumbnails']
         del entry['heatmap']
         del entry['automatic_captions']
 
-        # 영상 정보
-        video_id = entry['id']                # 영상 ID
-        video_url = entry['original_url']     # 영상 URL
-        title = entry['title']                # 영상 제목
-        description = entry['description']    # 영상 설명
-        chapters = entry['chapters']          # 영상 챕터
-        subtitles = entry['subtitles']        # 자막
-        channel = entry['channel']           # 채널명
-        channel_url = entry['channel_url']    # 채널 URL
+        # Video information
+        video_id = entry['id']  # Video ID
+        video_url = entry['original_url']  # Video URL
+        title = entry['title']  # Video title
+        description = entry['description']  # Video description
+        chapters = entry['chapters']  # Video chapters
+        subtitles = entry['subtitles']  # Subtitles
+        channel = entry['channel']  # Channel name
+        channel_url = entry['channel_url']  # Channel URL
         audio_file_path = f"{audio_dir}/{video_id}.mp3"
 
-        # 영상 정보를 JSON 파일로 저장
+        # Save video information as a JSON file
         save_metadata(
             video_id=video_id,
             video_url=video_url,
@@ -71,13 +81,12 @@ def extract_playlists(
             audio_file_path=audio_file_path,
         )
 
-        print(f"영상 ID: {video_id}")
-        print(f"영상 URL: {video_url}")
-        print(f"영상 제목: {title}")
-        print(f"영상 설명: \n{description}")
-        print(f"챕터: {chapters}")
-        print(f"채널명: {channel} - {channel_url}")
-        print(f"자막: {subtitles}")
+        print(f"Video ID: {video_id}")
+        print(f"Video URL: {video_url}")
+        print(f"Video Title: {title}")
+        print(f"Video Description: \n{description}")
+        print(f"Chapters: {chapters}")
+        print(f"Channel: {channel} - {channel_url}")
         print('-' * 50)
 
 
@@ -91,11 +100,27 @@ def save_metadata(
     channel_url: str,
     audio_file_path: str,
 ):
+    """
+    Save video metadata as a JSON file.
+
+    Args:
+        video_id (str): Video ID
+        video_url (str): Video URL
+        title (str): Video title
+        description (str): Video description
+        chapters (list): Video chapters
+        channel (str): Channel name
+        channel_url (str): Channel URL
+        audio_file_path (str): Path to the audio file
+
+    Returns:
+        None
+    """
     save_dir = os.path.join("assets", "metadata")
     save_path = os.path.join(save_dir, f"{video_id}.json")
     os.makedirs(save_dir, exist_ok=True)
 
-    # 영상 정보를 JSON 파일로 저장
+    # Save video information as a JSON file
     metadata = {
         "title": title,
         "description": description,
@@ -111,10 +136,20 @@ def save_metadata(
 
 
 def load_metadata(video_id: str, metadata_dir: str = "assets/metadata"):
+    """
+    Load video metadata from a JSON file.
+
+    Args:
+        video_id (str): Video ID
+        metadata_dir (str): Directory where metadata files are stored
+
+    Returns:
+        dict: Video metadata if exists, None otherwise
+    """
     metadata_path = os.path.join(metadata_dir, f"{video_id}.json")
 
     if not os.path.exists(metadata_path):
-        print(f'{video_id} 영상의 메타데이터가 존재하지 않습니다.')
+        print(f'Metadata for video {video_id} does not exist.')
         return None
 
     with open(metadata_path, 'r', encoding='utf-8') as f:
@@ -126,23 +161,34 @@ def save_automatic_subtitles(
     video_id: str,
     subtitle_dir: str = "subtitles",
 ):
+    """
+    Save automatically generated subtitles.
+
+    Args:
+        automatic_subtitle (dict): Dictionary containing subtitle information
+        video_id (str): Video ID
+        subtitle_dir (str): Directory to save subtitles
+
+    Returns:
+        None
+    """
     if automatic_subtitle is None:
-        print("자막이 없습니다.")
+        print("No subtitles available.")
         return
 
     for lang, content in automatic_subtitle.items():
-        # 자동 생성 자막 정보
+        # Automatically generated subtitle information
         url = content['url']
         language = content['name']
         ext = content['ext']
-        print(f"자동 생성된 {language} 자막 url: {url}")
+        print(f"Automatically generated {language} subtitle url: {url}")
 
-        # 자동 생성 자막 요청
+        # Request automatically generated subtitles
         response = requests.get(url)
         if response.status_code != 200:
             continue
 
-        # 자막을 지정된 폴더에 저장
+        # Save subtitles to the specified folder
         subtitle_filepath = os.path.join(subtitle_dir, f"{video_id}_{lang}.{ext}")
         with open(f"{subtitle_filepath}", 'wb') as f:
             f.write(response.content)

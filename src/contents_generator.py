@@ -22,6 +22,13 @@ class ContentsGenerator:
                  model: str | GenerativeModel,
                  system_instruction: str = None,
                  ):
+        """
+        Initialize the ContentsGenerator class.
+
+        Args:
+            model (str | GenerativeModel): Model name or GenerativeModel instance.
+            system_instruction (str): System instruction for the model.
+        """
         if isinstance(model, str):
             model = self.create_model(model, system_instruction)
 
@@ -33,23 +40,45 @@ class ContentsGenerator:
         self.generated_contents = []
 
     def set_generation_config(self, generation_config: GenerationConfig = None, request_options: RequestOptions = None):
+        """
+        Set the generation configuration and request options.
+
+        Args:
+            generation_config (GenerationConfig): Configuration for content generation.
+            request_options (RequestOptions): Options for the request.
+        """
         self.generation_config = generation_config
         self.request_options = request_options
 
     def generate_contents(self, prompt: str):
+        """
+        Generate contents based on the given prompt.
+
+        Args:
+            prompt (str): Prompt for content generation.
+        """
         all_contents_generated = False
 
         while not all_contents_generated:
             all_contents_generated = self._generate_contents(prompt=prompt)
 
             if not all_contents_generated:
-                print("모든 영상에 대한 컨텐츠 생성이 완료되지 않았습니다. 1분 후 다시 시도합니다.")
+                print("Content generation for all videos is not complete. Retrying in 1 minute...")
                 time.sleep(60)
                 continue
 
             break
 
     def _generate_contents(self, prompt: str):
+        """
+        Generate contents for all uploaded files.
+
+        Args:
+            prompt (str): Prompt for content generation.
+
+        Returns:
+            bool: True if all contents are generated, False otherwise.
+        """
         progress_bar = tqdm(list(get_all_uploaded_files(only_ready=True)))  # For impatient people like me
 
         for uploaded_file in progress_bar:
@@ -73,6 +102,16 @@ class ContentsGenerator:
         return all_contents_generated
 
     def generate_content(self, prompt: str, uploaded_file: File = None):
+        """
+        Generate content for a specific uploaded file.
+
+        Args:
+            prompt (str): Prompt for content generation.
+            uploaded_file (File): Uploaded file object.
+
+        Returns:
+            str: Generated content.
+        """
         prompt = [prompt, uploaded_file] if uploaded_file else prompt
 
         responses = self.model.generate_content(
@@ -91,6 +130,16 @@ class ContentsGenerator:
 
     @staticmethod
     def create_model(model_name: str = 'gemini-1.5-flash-002', system_instruction=None):
+        """
+        Create a GenerativeModel instance.
+
+        Args:
+            model_name (str): Name of the model.
+            system_instruction (str): System instruction for the model.
+
+        Returns:
+            GenerativeModel: Instance of GenerativeModel.
+        """
         return genai.GenerativeModel(
             model_name=model_name,
             system_instruction=system_instruction,
@@ -98,6 +147,7 @@ class ContentsGenerator:
 
     @staticmethod
     def print_all_available_models():
+        """ Print all available models. """
         for model in list_models():
             print(model)
 
