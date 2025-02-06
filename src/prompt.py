@@ -8,6 +8,8 @@ prompt = """Watch the YouTube video and answer the following questions:
 - The additional explanations should be written exactly as explained in the video
 - The additional explanations must be written in Korean.
 - Also, write down the timestamp when the additional explanation for the English sentence starts in the video.
+- There are parts where the sentences are repeated without explanation, but do not set the timeline for those parts. Set the timeline from the start of the explanation for each sentence.
+- Summarize only the important parts of the explanation for each sentence.
 - The answer should be written in Markdown format.
 - The answer must include the timestamp, sentence, transcription, and explanation.
 - Below is an example answer:
