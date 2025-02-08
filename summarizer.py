@@ -10,7 +10,7 @@ from google.generativeai.types import RequestOptions
 from src.contents_generator import ContentsGenerator
 from src.prompt import prompt, system_instruction
 from src.playlist_extractor import extract_playlists
-from src.file_manager import upload_files_from_directory, delete_all_uploaded_files
+from src.file_manager import upload_files_from_directory
 
 load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
@@ -49,13 +49,10 @@ def main(
     # Generate content for all uploaded videos
     contents_generator.generate_contents(prompt)
 
-    # Delete all uploaded files
-    delete_all_uploaded_files()
-
     # Delete all extracted video information and files
-    shutil.rmtree('assets')
+    shutil.rmtree('assets', ignore_errors=True)
 
-    print("Content generation for all videos has been completed.")
+    print("Content generation has been completed.")
 
 
 if __name__ == '__main__':
