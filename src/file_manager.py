@@ -1,11 +1,6 @@
 import os
 from tqdm import tqdm
-from pathlib import Path
-
 import google.generativeai as genai
-from google.generativeai.types import File
-
-from src.playlist_extractor import load_metadata
 
 
 def get_all_uploaded_files(only_ready: bool = True):
@@ -97,10 +92,3 @@ def delete_all_uploaded_files():
     progress_bar = tqdm(get_all_uploaded_files())
     for uploaded_file in progress_bar:
         delete_uploaded_file(uploaded_file.name, progress_bar=progress_bar)
-
-
-def print_file_info(uploaded_file: File):
-    file_name = uploaded_file.display_name
-    video_id = Path(file_name).stem
-    video_title = load_metadata(video_id)['title']
-    print(f" - {file_name=} ({uploaded_file.state.name=}): {video_title=}")
