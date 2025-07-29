@@ -2,6 +2,7 @@ import os
 import json
 import yt_dlp
 import requests
+import traceback
 
 from typing import Dict
 
@@ -27,6 +28,7 @@ def extract_playlists(
     ydl_opts = {
         'quiet': False,                   # Hide unnecessary output messages
         'extract_flat': False,            # Extract with video information
+        'ignoreerrors': True,             # Ignore errors and continue
         'format': 'bestaudio/best',       # Audio download format
         'postprocessors': [{              # Postprocessor to run after download
             'key': 'FFmpegExtractAudio',  # Extract audio
@@ -53,6 +55,9 @@ def extract_playlists(
 
     # Extract all video information from the playlist
     for entry in video_list:
+        if entry is None:
+            continue
+
         del entry['formats']
         del entry['thumbnails']
         del entry['heatmap']
