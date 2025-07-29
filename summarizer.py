@@ -10,7 +10,7 @@ from google.generativeai.types import RequestOptions
 from src.contents_generator import ContentsGenerator
 from src.prompt import prompt, system_instruction
 from src.playlist_extractor import extract_playlists
-from src.file_manager import upload_files_from_directory
+from src.file_manager import upload_files_from_directory, delete_all_uploaded_files
 
 load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
@@ -19,13 +19,13 @@ genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 def parse_args():
     parser = argparse.ArgumentParser(description='Generate contents from YouTube playlist')
     parser.add_argument('--url', type=str, help='YouTube Video or Playlist URL')
-    parser.add_argument('--model_name', type=str, default='gemini-2.0-pro-exp', help='Generative model name')
+    parser.add_argument('--model_name', type=str, default='gemini-2.5-flash', help='Generative model name')
     return parser.parse_args()
 
 
 def main(
     youtube_url: str,
-    model_name: str = 'gemini-2.0-pro-exp',
+    model_name: str = 'gemini-2.5-flash',
 ):
     # Set up generative model config
     generation_config = genai.GenerationConfig(
@@ -49,10 +49,13 @@ def main(
     # Generate content for all uploaded videos
     contents_generator.generate_contents(prompt)
 
-    # Delete all extracted video information and files
-    shutil.rmtree('assets', ignore_errors=True)
+    # Delete all uploaded files
+    delete_all_uploaded_files()
 
-    print("Content generation has been completed.")
+    # Delete all extracted video information and files
+    shutil.rmtree('assets')
+
+    print("Content generation for all videos has been completed.")
 
 
 if __name__ == '__main__':
